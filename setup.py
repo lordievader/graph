@@ -7,5 +7,5 @@ setup(
     author='Olivier van der Toorn',
     author_email='oliviervdtoorn@gmail.com',
     packages=['graph'],
-    install_requires=['matplotlib', 'networkx'],
+    install_requires=['matplotlib', 'networkx', 'pygraphviz'],
 )
