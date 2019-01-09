@@ -94,7 +94,7 @@ class Graph():
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=figsize)
 
-        pos = graphviz_layout(self.graph, prog='dot')
+        pos = graphviz_layout(self.graph, prog='neato')
         node_labels = {
             name: f'{name}\n{label}' for name, label in
             networkx.get_node_attributes(self.graph, 'value').items()}
