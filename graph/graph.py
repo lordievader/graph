@@ -12,6 +12,7 @@ class Graph():
     """
     defaults = {
         'value': 0,
+        'percent': 0,
         'color': 'green',
     }
     required_keys = ['value', 'color']
@@ -74,8 +75,14 @@ class Graph():
         :type node: Graph
         """
         if 'value' in node.attributes:
-            self.attributes['value'] += node.attributes['value']
-            self.graph.nodes[self.name]['value'] += node.attributes['value']
+            value = node.attributes['value']
+            self.attributes['value'] += value
+            self.graph.nodes[self.name]['value'] += value
+
+        if 'percent' in node.attributes:
+            percent = node.attributes['percent']
+            self.attributes['percent'] += percent
+            self.graph.nodes[self.name]['percent'] += percent
 
         self.graph.add_nodes_from(node.graph.nodes())
         self.graph.add_edges_from(node.graph.edges())
@@ -95,9 +102,12 @@ class Graph():
             _, axis = plt.subplots(1, 1, figsize=figsize)
 
         pos = graphviz_layout(self.graph, prog='neato')
-        node_labels = {
-            name: f'{name}\n{label}' for name, label in
-            networkx.get_node_attributes(self.graph, 'value').items()}
+        values = networkx.get_node_attributes(self.graph, 'value')
+        percentages = networkx.get_node_attributes(self.graph, 'percent')
+        node_labels = {}
+        for name, value in values.items():
+            percent = percentages[name]
+            node_labels[name] = f'{name}\n{value}\n{percent:5.2f}%'
         colors = [networkx.get_node_attributes(self.graph, 'color')[name]
                   for name in pos]
         networkx.draw(
