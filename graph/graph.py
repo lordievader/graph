@@ -102,7 +102,7 @@ class Graph():
                   for name in pos]
         networkx.draw(
             self.graph, pos, ax=axis, node_shape='H',
-            node_size=2000, node_color=colors, alpha=0.3)
+            node_size=2000, node_color=colors, alpha=0.5)
         networkx.draw_networkx_labels(
             self.graph, pos, ax=axis, labels=node_labels)
 
