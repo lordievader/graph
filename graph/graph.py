@@ -1,6 +1,7 @@
 """Author:      Olivier van der Toorn <o.i.vandertoorn@utwente.nl>
 Description:    Library for building graphs.
 """
+import logging
 import matplotlib.pyplot as plt
 import networkx
 from networkx.drawing.nx_agraph import graphviz_layout
@@ -91,15 +92,21 @@ class Graph():
             for item, value in node.graph.node[name].items():
                 self.graph.node[name][item] = value
 
-    def show(self, axis=None, figsize=(7, 5)):
+    def show(self, axis=None, figsize=(7, 5), dynamic_size=False):
         """Plot the graph.
 
         :param ax: (optional) reference to a matplotlib axis
         :type ax: matplotlib.ax
+        :param figsize: (optional) figure size
+        :type figsize: tuple (width, height)
+        :param dynamic_size: let the size be dependend on the percentage
+        :type dynamic_size: boolean
+        :return: matplotlib axis
         """
         self.build()
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=figsize)
+
 
         pos = graphviz_layout(self.graph, prog='neato')
         values = networkx.get_node_attributes(self.graph, 'value')
@@ -108,11 +115,22 @@ class Graph():
         for name, value in values.items():
             percent = percentages[name]
             node_labels[name] = f'{name}\n{value}\n{percent:5.2f}%'
+
+        base_size = 2000
+        if dynamic_size is True:
+            node_sizes = []
+            for name in pos.keys():
+                percent = percentages[name]
+                node_sizes.append(base_size * (percent / 100))
+
+        else:
+            node_sizes = base_size
+
         colors = [networkx.get_node_attributes(self.graph, 'color')[name]
                   for name in pos]
         networkx.draw(
-            self.graph, pos, ax=axis, node_shape='H',
-            node_size=2000, node_color=colors, alpha=0.5)
+            self.graph, pos, ax=axis, node_shape='o',
+            node_size=node_sizes, node_color=colors, alpha=0.5)
         networkx.draw_networkx_labels(
             self.graph, pos, ax=axis, labels=node_labels)
 
