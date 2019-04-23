@@ -3,9 +3,9 @@ Description:    Library for building graphs.
 """
 import logging
 import matplotlib.pyplot as plt
+import numpy
 import networkx
 from networkx.drawing.nx_agraph import graphviz_layout
-
 
 
 class Graph():
@@ -94,19 +94,19 @@ class Graph():
 
     def show(self, axis=None, figsize=(7, 5), dynamic_size=False):
         """Plot the graph.
+        Dynamic size can be a boolean or one of 'lin', 'exp', or 'log'.
 
         :param ax: (optional) reference to a matplotlib axis
         :type ax: matplotlib.ax
         :param figsize: (optional) figure size
         :type figsize: tuple (width, height)
         :param dynamic_size: let the size be dependend on the percentage
-        :type dynamic_size: boolean
+        :type dynamic_size: boolean/str
         :return: matplotlib axis
         """
         self.build()
         if axis is None:
             _, axis = plt.subplots(1, 1, figsize=figsize)
-
 
         pos = graphviz_layout(self.graph, prog='neato')
         values = networkx.get_node_attributes(self.graph, 'value')
@@ -117,11 +117,20 @@ class Graph():
             node_labels[name] = f'{name}\n{value}\n{percent:5.2f}%'
 
         base_size = 2000
-        if dynamic_size is True:
+        if dynamic_size is not False:
             node_sizes = []
             for name in pos.keys():
                 percent = percentages[name]
-                node_sizes.append(base_size * (percent / 100))
+                if dynamic_size == 'exp':
+                    node_size = base_size * ((percent * percent) / 10000)
+
+                elif dynamic_size == 'log':
+                    node_size = base_size * (0.5 * numpy.log10(percent))
+
+                else:
+                    node_size = base_size * (percent / 100)
+
+                node_sizes.append(node_size)
 
         else:
             node_sizes = base_size
