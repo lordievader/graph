@@ -78,19 +78,19 @@ class Graph():
         if 'value' in node.attributes:
             value = node.attributes['value']
             self.attributes['value'] += value
-            self.graph.nodes[self.name]['value'] += value
+            self.graph.nodes()[self.name]['value'] += value
 
         if 'percent' in node.attributes:
             percent = node.attributes['percent']
             self.attributes['percent'] += percent
-            self.graph.nodes[self.name]['percent'] += percent
+            self.graph.nodes()[self.name]['percent'] += percent
 
         self.graph.add_nodes_from(node.graph.nodes())
         self.graph.add_edges_from(node.graph.edges())
         self.graph.add_edge(self.name, node.name)
-        for name in node.graph.node:
-            for item, value in node.graph.node[name].items():
-                self.graph.node[name][item] = value
+        for name in node.graph.nodes():
+            for item, value in node.graph.nodes()[name].items():
+                self.graph.nodes()[name][item] = value
 
     def show(self, axis=None, figsize=(7, 5), dynamic_size=False):
         """Plot the graph.
@@ -142,5 +142,4 @@ class Graph():
             node_size=node_sizes, node_color=colors, alpha=0.5)
         networkx.draw_networkx_labels(
             self.graph, pos, ax=axis, labels=node_labels)
-
         return axis

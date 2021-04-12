@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='graph',
-    version='1.3.0',
+    version='1.3.1',
     description='Graph library based on NetworkX',
     author='Olivier van der Toorn',
     author_email='oliviervdtoorn@gmail.com',
